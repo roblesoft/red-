@@ -1,9 +1,10 @@
 require 'socket'
+require 'json'
 
 class Nodo
     def initialize host_name, port_host
         @cliente_socket = TCPSocket.open host_name, port_host
-        @result = ' '
+        @result = []
         puts "Started node......."
         run
     end
@@ -11,8 +12,11 @@ class Nodo
     def run_client
         begin 
 			loop do 
-                response = @cliente_socket.read 10 
+				response = JSON.parse(@cliente_socket.gets)
 				puts response
+				@result << response
+				puts response.class
+
             end
             @cliente_socket.close
         rescue => e

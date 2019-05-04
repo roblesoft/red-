@@ -19,7 +19,7 @@ class Nodo
 					puts "connect to #{remote_id}"
 					@connection_details << Hash[:"#{remote_hostname.to_sym}" => remote_id].to_json
 					puts @connection_details
-					client.puts @connection_details.first
+					client.puts @connection_details
 				end
 			end.join
         rescue => e

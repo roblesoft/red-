@@ -6,6 +6,8 @@ class Nodo
         @server_socket = TCPServer.open port_server
         @result = ' '
 		@connection_details = Array.new
+
+		@pasconections = 0
 		@names = [:uriel, :andrea, :nacho, :carlos]
         puts "Started node......."
         run
@@ -20,9 +22,9 @@ class Nodo
 					index += 1
 					sock_domain, remote_port, remote_hostname, remote_id = client.peeraddr
 					puts "connect to #{remote_id}"
+					#listen_client_conexions client, index, remote_id
 					@connection_details << Hash[@names[index] => remote_id].to_json
-					puts @connection_details
-					client.puts @connection_details
+					client.puts @connection_details 
 				end
 			end.join
         rescue => e
@@ -32,6 +34,12 @@ class Nodo
             @client_connection.close
         end
     end
+
+	def listen_client_conexions(client, index, remote_id)
+		loop do 
+			client.puts Hash[@names[index] => remote_id].to_json
+		end
+	end
 
     def run
         server = Thread.new do

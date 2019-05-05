@@ -6,7 +6,6 @@ class Nodo
     def initialize host_name, port_host
         @cliente_socket = TCPSocket.open host_name, port_host
         @data = []
-		@unconect = Queue.new
 		@root = TkRoot.new
 		@self = self
         puts "Started node......."
@@ -15,13 +14,11 @@ class Nodo
 
     def run_client
         begin 
-			while @unconect.empty?
+			loop do
 				response = JSON.parse(@cliente_socket.gets)
 				puts response
 				@data << response
 			end
-			puts "close conexion"
-            @cliente_socket.close
         rescue => e
             puts e.message
             @cliente_socket.close
@@ -32,8 +29,8 @@ class Nodo
     end
 
 	def close_interface
-		@unconect << false
-		puts @unconect.empty?
+		puts "close conexion"
+		@cliente_socket.close
 		@root.destroy()
 	end
 
@@ -65,6 +62,7 @@ class Nodo
 		gui = Thread.new do 
 			user_interface
 		end
+		client.join
 		gui.join
     end
 

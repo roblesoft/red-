@@ -9,19 +9,16 @@ class Nodo
 		@unconect = Queue.new
 		@root = TkRoot.new
 		@self = self
-		puts @unconect.class
         puts "Started node......."
-        run
+		run
     end
 
     def run_client
-		conexion = true
         begin 
 			while @unconect.empty?
 				response = JSON.parse(@cliente_socket.gets)
 				puts response
 				@data << response
-				puts response.class
 			end
 			puts "close conexion"
             @cliente_socket.close
@@ -31,10 +28,12 @@ class Nodo
         ensure
             @cliente_socket.close
         end
+
     end
 
 	def close_interface
 		@unconect << false
+		puts @unconect.empty?
 		@root.destroy()
 	end
 
@@ -66,10 +65,9 @@ class Nodo
 		gui = Thread.new do 
 			user_interface
 		end
-        client.join
 		gui.join
     end
 
 end
 
-server = Nodo.new 'localhost', 5434
+Nodo.new 'localhost', 5434

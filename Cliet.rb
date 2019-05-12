@@ -37,10 +37,10 @@ class Nodo
 	def user_interface
 		myself = @self
 		content = Tk::Tile::Frame.new(@root) { padding "3 3 12 12" }
-		$names = @data.map {|item| "#{item.keys[0]}" }
-		$ips = @data.map {|item| "#{item.values[0]}" }
-		$names_list_variable = TkVariable.new $names
-		$ips_list_variable = TkVariable.new $ips
+		@names = @data.map {|item| "#{item.keys[0]}" }
+		@ips = @data.map {|item| "#{item.values[0]}" }
+		$names_list_variable = TkVariable.new @names
+		$ips_list_variable = TkVariable.new @ips
 		names_list = TkListbox.new(content) {listvariable $names_list_variable}
 		ips_list = TkListbox.new(content) {listvariable $ips_list_variable}
 		namelbl = Tk::Tile::Label.new(content) {text 'Nombre'}

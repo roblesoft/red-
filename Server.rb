@@ -9,7 +9,7 @@ class Nodo
 		@connection_details = Array.new
 		@root = TkRoot.new
 		@pasconections = 0
-		@names = [:uriel, :andrea, :nacho, :carlos]
+		@names_list = [:uriel, :andrea, :nacho, :carlos]
         puts "Started node......."
         run
     end
@@ -41,7 +41,7 @@ class Nodo
 					sock_domain, remote_port, remote_hostname, remote_id = client.peeraddr
 					puts "connect to #{remote_id}"
 					#listen_client_conexions client, index, remote_id
-					@connection_details << Hash[@names[index] => remote_id]
+					@connection_details << Hash[@names_list[index] => remote_id]
 
 					@names = @connection_details.map {|item| "#{item.keys[0]}" }
 					@ips = @connection_details.map {|item| "#{item.values[0]}" }

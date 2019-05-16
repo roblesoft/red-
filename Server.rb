@@ -12,8 +12,11 @@ class Nodo
 		@connection_info[:server] = @server_socket
 		@connection_info[:clients] = @connected_clients
 		@root = TkRoot.new
-		@pasconections = 0
 		@self = self
+		@names = []
+		@ips = []
+		@cpus = []
+		@ranks = []
         puts "Started node......."
         run
     end
@@ -48,10 +51,10 @@ class Nodo
 		close_conection = TkButton.new(content) { text "Cerrar conexion"; command(proc {myself.close_interface}) }
 
 		content.grid column: 0, row: 0, sticky: 'nsew'
-		namelbl.grid column: 1, row: 1, padx: 70
-		ramlbl.grid column: 3, row: 1, padx: 70
-		cpulbl.grid column: 4, row: 1, padx: 70
-		ranklbl.grid column: 5, row: 1, padx: 70
+		namelbl.grid column: 1, row: 1
+		ramlbl.grid column: 3, row: 1
+		cpulbl.grid column: 4, row: 1
+		ranklbl.grid column: 5, row: 1
 		close_conection.grid column: 5, row: 3, pady: 10
 		names_list.grid column: 1, row: 2
 		ips_list.grid column: 2, row: 2
@@ -59,6 +62,14 @@ class Nodo
 		ram_list.grid column: 3, row: 2
 		rank_list.grid column: 5, row: 2
 		iplbl.grid column: 2, row: 1
+
+		def update_data name, ips, cpus, rams
+			$names_list_variable.value = name
+			$ips_list_variable.value = ips
+			$cpus_list_variable.value = cpus
+			$rams_list_variable.value = rams
+		end
+
 		
         begin
 			loop do 
@@ -75,10 +86,8 @@ class Nodo
 					@rams = @connection_details.map {|item| item['memory']} 
 					@cpus = @connection_details.map {|item| item['cpu']}
 
-					$names_list_variable.value = @names
-					$ips_list_variable.value = @ips
-					$cpus_list_variable.value = @cpus
-					$rams_list_variable.value = @rams
+					update_data @names, @ips, @cpus, @rams
+
 				end
 			end.join
         rescue => e
@@ -93,12 +102,6 @@ class Nodo
 		puts "close conexion"
 		@cliente_connection.close
 		@root.destroy()
-	end
-
-	def listen_client_conexions(client, index, remote_id)
-		loop do 
-			client.puts Hash[@names[index] => remote_id].to_json
-		end
 	end
 
 	def user_interface

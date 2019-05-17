@@ -64,10 +64,12 @@ class Nodo
 		iplbl.grid column: 2, row: 1
 
 		def update_data name, ips, cpus, rams
+
 			$names_list_variable.value = name
 			$ips_list_variable.value = ips
 			$cpus_list_variable.value = cpus
 			$rams_list_variable.value = rams
+
 		end
 
 		

@@ -8,7 +8,7 @@ class Nodo
         @cliente_socket = TCPSocket.open host_name, port_host
 		@cpu = 'AMD E9'
 		@memory = PosixPsutil::Memory.virtual_memory.total / 1e+9
-		@user = PosixPsutil::System.users[4].name
+		@user = PosixPsutil::System.users[1].name
 		puts @memory
         puts "Started node......."
 		run_client

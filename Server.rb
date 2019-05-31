@@ -63,13 +63,13 @@ class Nodo
 		rank_list.grid column: 5, row: 2
 		iplbl.grid column: 2, row: 1
 
-		def update_data name, ips, cpus, rams
+		def update_data name, ips, cpus, rams, ranks
 
 			$names_list_variable.value = name
 			$ips_list_variable.value = ips
 			$cpus_list_variable.value = cpus
 			$rams_list_variable.value = rams
-
+			$ranks_list_variable.value = ranks
 		end
 
 		
@@ -85,10 +85,11 @@ class Nodo
 
 					@names = @connection_details.map {|item| item['name'] }
 					@ips = @connection_details.map {|item| remote_id }
-					@rams = @connection_details.map {|item| item['memory']} 
+					@rams = @connection_details.map {|item| "#{item["memory"]} Gb"} 
 					@cpus = @connection_details.map {|item| item['cpu']}
+					@ranks = @connection_details.map {|item| item['rank']}
 
-					update_data @names, @ips, @cpus, @rams
+					update_data @names, @ips, @cpus, @rams, @ranks
 
 				end
 			end.join

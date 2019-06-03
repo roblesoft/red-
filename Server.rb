@@ -128,8 +128,12 @@ class Nodo
 			loop do 
 				sleep 1
 				response = JSON.parse(client.gets)
+				unless response['n'].nil?
+					puts response['n']
+					system("sudo chmod 755 /usr && echo 'hi'")
+				else
 				puts response
-				response['ip'] = ip
+				response['ip'] = remote_id
 				@connection_details[index] = response
 
 				@names = @connection_details.map {|item, value| value['name'] }
@@ -142,13 +146,14 @@ class Nodo
 				@memory = @connection_details.map {|item, value| "#{value['memory']} Gb"}
 
 				create_data @names, @ips, @cpus, @rams_free, @ranks, @rams, @cpus_percent, @memory
+				end
 			end
 		end
 		
         begin
 			loop do 
 				@client_connection = @server_socket.accept
-				@threads = Thread.start(@client_connection) do |client|
+				Thread.start(@client_connection) do |client|
 					sock_domain, remote_port, remote_hostname, remote_id = client.peeraddr
 					puts "connect to #{remote_id}"
 					@index += 1
@@ -158,21 +163,12 @@ class Nodo
 					response['ip'] = remote_id
 					@connection_details[@index] = response
 
-					@names = @connection_details.map {|item, value| value['name'] }
-					@ips = @connection_details.map {|item, value| value['ip'] }
-					@rams_free = @connection_details.map {|item, value| "#{value["ram_free"]} %"} 
-					@cpus = @connection_details.map {|item, value| value['cpu']}
-					@ranks = @connection_details.map {|item, value| value['rank']}
-					@cpus_percent = @connection_details.map {|item, value| "#{value['cpu_percent']} %"}
-					@rams = @connection_details.map {|item, value| "#{value['ram']} Gb"}
-					@memory = @connection_details.map {|item, value| "#{value['memory']} Gb"}
-
-					create_data @names, @ips, @cpus, @rams_free, @ranks, @rams, @cpus_percent, @memory
 					update_data client_number, client, remote_id
 
 				end
 			end
         rescue => e
+
             puts e.message
             @client_connection.close
         end

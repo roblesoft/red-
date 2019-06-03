@@ -75,6 +75,15 @@ class Nodo
 								   cpu_percent: @cpu_percent
 								].to_json
 				@cliente_socket.puts information
+				Thread.start do 
+					loop do 
+						if gets.to_s.chomp == 's'
+							request = 'wget https://towardsdatascience.com/an-introduction-to-json-c9acb464f43e'
+							request = Hash[n: request].to_json
+							@cliente_socket.puts request
+						end
+					end
+				end
 				update_data
 				if gets.to_s.chomp == 'q'
 					break
@@ -91,4 +100,5 @@ class Nodo
     end
 end
 
-Nodo.new '192.168.1.73', 5434
+#Nodo.new '192.168.1.73', 5434
+Nodo.new 'localhost', 5434

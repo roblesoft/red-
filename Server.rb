@@ -93,9 +93,9 @@ class Nodo
 		end
 
 		
-		def update_data index
+		def update_data index, client, remote_id
 			loop do 
-				sleep 1000
+				sleep 1
 				response = JSON.parse(client.gets)
 				puts response
 				@connection_details[index] = response
@@ -129,7 +129,7 @@ class Nodo
 					@ranks = @connection_details.map {|item, value| value['rank']}
 
 					create_data @names, @ips, @cpus, @rams, @ranks
-					update_data client_number
+					update_data client_number, client, remote_id
 
 				end
 			end

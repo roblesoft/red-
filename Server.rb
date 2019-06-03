@@ -27,16 +27,22 @@ class Nodo
 		content = Tk::Tile::Frame.new(@root) { padding "3 3 12 12" }
 		@names = @connection_details.map {|item| item['name'] }
 		@ips = @connection_details.map {|item| item['ip'] }
-		@rams = @connection_details.map {|item| item['ram']} 
+		@rams_free = @connection_details.map {|item| item['ram_free']} 
 		@cpus = @connection_details.map {|item| item['cpu']}
 		@ranks = @connection_details.map {|item| item['cpu']}
 
+		@cpus_percent = @connection_details.map {|item| item['cpu_percent']}
+		@rams = @connection_details.map {|item| item['ram']}
+		@memory = @connection_details.map {|item| item['memory']}
 
 		$names_list_variable = TkVariable.new @names
 		$ips_list_variable = TkVariable.new @ips
-		$rams_list_variable = TkVariable.new @rams
+		$rams_free_list_variable = TkVariable.new @rams
 		$cpus_list_variable = TkVariable.new @cpus
 		$ranks_list_variable = TkVariable.new @rank
+		$rams_list_variable = TkVariable.new @rams
+		$cpu_percent_variable = TkVariable.new @cpus_percent
+		$memory_free_variable = TkVariable.new @memory
 
 		names_list = TkListbox.new(content) do 
 			listvariable $names_list_variable 
@@ -44,10 +50,10 @@ class Nodo
 		end
 		ips_list = TkListbox.new(content) do 
 			listvariable $ips_list_variable 
-			width 10 
+			width 15 
 		end
-		ram_list = TkListbox.new(content)  do 
-			listvariable $rams_list_variable 
+		ram_free_list = TkListbox.new(content)  do 
+			listvariable $rams_free_list_variable 
 			width 10 
 		end
 		cpu_list = TkListbox.new(content)  do
@@ -58,12 +64,27 @@ class Nodo
 			listvariable $ranks_list_variable 
 			width 10 
 		end
+		ram_list = TkListbox.new(content)  do 
+			listvariable $rams_list_variable 
+			width 10 
+		end
+		cpu_percent_list = TkListbox.new(content)  do 
+			listvariable $cpu_percent_variable 
+			width 10 
+		end
+		memory_list = TkListbox.new(content)  do 
+			listvariable $memory_free_variable
+			width 10 
+		end
 
 		namelbl = Tk::Tile::Label.new(content) {text 'Nombre'}
 		iplbl = Tk::Tile::Label.new(content) {text 'Ip'}
-		ramlbl = Tk::Tile::Label.new(content) {text 'Ram'}
+		ramfreelbl = Tk::Tile::Label.new(content) {text 'Ram libre'}
 		cpulbl = Tk::Tile::Label.new(content) {text 'Cpu'}
 		ranklbl = Tk::Tile::Label.new(content) {text 'Ranking'}
+		ramlbl = Tk::Tile::Label.new(content) {text 'Ram'}
+		cpupercentlbl = Tk::Tile::Label.new(content) {text '% CPU libre'}
+		memorylbl = Tk::Tile::Label.new(content) {text 'Memoria'}
 		close_conection = TkButton.new(content) do 
 			text "Cerrar"
 			command(proc {myself.close_interface}) 
@@ -72,41 +93,55 @@ class Nodo
 
 		content.grid column: 0, row: 0, sticky: 'nsew'
 		namelbl.grid column: 1, row: 1
+		iplbl.grid column: 2, row: 1
 		ramlbl.grid column: 3, row: 1
 		cpulbl.grid column: 4, row: 1
-		ranklbl.grid column: 5, row: 1
-		close_conection.grid column: 5, row: 3, pady: 10
+		memorylbl.grid column: 5, row: 1
+		cpupercentlbl.grid column: 6, row: 1
+		ramfreelbl.grid column: 7, row: 1
+		ranklbl.grid column: 8, row: 1
+		close_conection.grid column: 8, row: 3, pady: 10
+
 		names_list.grid column: 1, row: 2
 		ips_list.grid column: 2, row: 2
-		cpu_list.grid column: 4, row: 2
 		ram_list.grid column: 3, row: 2
-		rank_list.grid column: 5, row: 2
-		iplbl.grid column: 2, row: 1
+		cpu_list.grid column: 4, row: 2
+		memory_list.grid column: 5, row: 2
+		cpu_percent_list.grid column: 6, row: 2
+		ram_free_list.grid column: 7, row: 2
+		rank_list.grid column: 8, row: 2
 
-		def create_data name, ips, cpus, rams, ranks
+		def create_data name, ips, cpus, rams_free, ranks, rams, cpus_percent, memory
 
 			$names_list_variable.value = name
 			$ips_list_variable.value = ips
 			$cpus_list_variable.value = cpus
-			$rams_list_variable.value = rams
+			$rams_free_list_variable.value = rams_free
 			$ranks_list_variable.value = ranks
+			$rams_list_variable.value = rams
+			$cpu_percent_variable.value = cpus_percent
+			$memory_free_variable.value = memory
 		end
 
 		
-		def update_data index
+		def update_data index, client, ip
 			loop do 
-				sleep 1000
+				sleep 1
 				response = JSON.parse(client.gets)
 				puts response
+				response['ip'] = ip
 				@connection_details[index] = response
 
 				@names = @connection_details.map {|item, value| value['name'] }
-				@ips = @connection_details.map {|item, value| remote_id }
-				@rams = @connection_details.map {|item, value| "#{value["memory"]} %"} 
+				@ips = @connection_details.map {|item, value| value['ip'] }
+				@rams_free = @connection_details.map {|item, value| "#{value["ram_free"]} %"} 
 				@cpus = @connection_details.map {|item, value| value['cpu']}
 				@ranks = @connection_details.map {|item, value| value['rank']}
+				@cpus_percent = @connection_details.map {|item, value| "#{value['cpu_percent']} %"}
+				@rams = @connection_details.map {|item, value| "#{value['ram']} Gb"}
+				@memory = @connection_details.map {|item, value| "#{value['memory']} Gb"}
 
-				create_data @names, @ips, @cpus, @rams, @ranks
+				create_data @names, @ips, @cpus, @rams_free, @ranks, @rams, @cpus_percent, @memory
 			end
 		end
 		
@@ -120,16 +155,20 @@ class Nodo
 					client_number = @index
 					response = JSON.parse(client.gets)
 					puts response
+					response['ip'] = remote_id
 					@connection_details[@index] = response
 
 					@names = @connection_details.map {|item, value| value['name'] }
-					@ips = @connection_details.map {|item, value| remote_id }
-					@rams = @connection_details.map {|item, value| "#{value["memory"]} %"} 
+					@ips = @connection_details.map {|item, value| value['ip'] }
+					@rams_free = @connection_details.map {|item, value| "#{value["ram_free"]} %"} 
 					@cpus = @connection_details.map {|item, value| value['cpu']}
 					@ranks = @connection_details.map {|item, value| value['rank']}
+					@cpus_percent = @connection_details.map {|item, value| "#{value['cpu_percent']} %"}
+					@rams = @connection_details.map {|item, value| "#{value['ram']} Gb"}
+					@memory = @connection_details.map {|item, value| "#{value['memory']} Gb"}
 
-					create_data @names, @ips, @cpus, @rams, @ranks
-					update_data client_number
+					create_data @names, @ips, @cpus, @rams_free, @ranks, @rams, @cpus_percent, @memory
+					update_data client_number, client, remote_id
 
 				end
 			end

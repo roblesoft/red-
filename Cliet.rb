@@ -7,8 +7,11 @@ class Nodo
     def initialize host_name, port_host
         @cliente_socket = TCPSocket.open host_name, port_host
 		@cpu = 'AMD A9'
-		@memory = 100 - PosixPsutil::Memory.virtual_memory.percent
-		@user = "uriel"
+		@ram_free = (100 - PosixPsutil::Memory.virtual_memory.percent).round 2
+		@ram = (PosixPsutil::Memory.virtual_memory.total / 1e+9).round 2
+		@cpu_percent = (100 - PosixPsutil::CPU.cpu_percent).round 2
+		@memory = (PosixPsutil::Disks.disk_usage("/").free / 1e+9).round 2
+		@user = "Roblesoft"
 		@rank = 0
         puts "Started node......."
 		run_client
@@ -16,7 +19,8 @@ class Nodo
 	
 	def update_data
 		loop do 
-			@memory = 100 - PosixPsutil::Memory.virtual_memory.percent
+			@ram_free = (100 - PosixPsutil::Memory.virtual_memory.percent).round 2
+			@cpu_percent = (100 - PosixPsutil::CPU.cpu_percent).round 2
 			if @cpu == 'intel i7'
 				@rank = 100
 			elsif @cpu == 'intel i5' || @cpu == 'AMD A9'
@@ -31,9 +35,16 @@ class Nodo
 			elsif @memory >= 50
 				@rank += 30
 			end
-			information = Hash[name: @user, memory: @memory, cpu: @cpu, rank: @rank].to_json
+			information = Hash[name: @user,
+								ram_free: @ram_free,
+								cpu: @cpu, 
+								rank: @rank,
+								ram: @ram,
+								memory: @memory,
+								cpu_percent: @cpu_percent
+							].to_json
 			@cliente_socket.puts information
-			sleep 1000
+			sleep 1
 		end
 	end
 
@@ -55,8 +66,16 @@ class Nodo
 					@rank += 30
 				end
 
-				information = Hash[name: @user, memory: @memory, cpu: @cpu, rank: @rank].to_json
+				information = Hash[name: @user,
+								   ram_free: @ram_free,
+								   cpu: @cpu, 
+								   rank: @rank,
+								   ram: @ram,
+								   memory: @memory,
+								   cpu_percent: @cpu_percent
+								].to_json
 				@cliente_socket.puts information
+				update_data
 				if gets.to_s.chomp == 'q'
 					break
 				end
@@ -72,4 +91,4 @@ class Nodo
     end
 end
 
-Nodo.new 'localhost', 5434
+Nodo.new '192.168.1.73', 5434

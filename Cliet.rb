@@ -78,7 +78,7 @@ class Nodo
 				Thread.start do 
 					loop do 
 						if gets.to_s.chomp == 's'
-							request = 'wget https://towardsdatascience.com/an-introduction-to-json-c9acb464f43e'
+							request = 'Ejecutando comando'
 							request = Hash[n: request].to_json
 							@cliente_socket.puts request
 						end

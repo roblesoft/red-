@@ -130,7 +130,7 @@ class Nodo
 				response = JSON.parse(client.gets)
 				unless response['n'].nil?
 					puts response['n']
-					system("sudo chmod 755 /usr && echo 'hi'")
+					system("python3 ../../PageRank/main.py")
 				else
 				puts response
 				response['ip'] = remote_id

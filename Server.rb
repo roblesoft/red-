@@ -164,9 +164,7 @@ class Nodo
 					puts response
 					response['ip'] = remote_id
 					@connection_details[@index] = response
-
 					update_data client_number, client, remote_id
-
 				end
 			end
         rescue => e

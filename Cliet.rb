@@ -21,43 +21,38 @@ class Nodo
 		loop do 
 			@ram_free = (100 - PosixPsutil::Memory.virtual_memory.percent).round 2
 			@cpu_percent = (100 - PosixPsutil::CPU.cpu_percent).round 2
-			if @cpu == 'intel i7'
-				@multiplo = 15
-				@rank = 100 * @multiplo
-			elsif @cpu == 'intel i5' || @cpu == 'AMD A9'
-				@multiplo = 10
-				@rank = 80 * @multiplo
-			elsif @cpu == 'intel i3' 
-				@multiplo = 8
-				@rank = 50 * @multiplo
-			end
-			if @ram >= 11.0
-				@multiplo += 10
-				@rank += 100 * @multiplo
-			elsif @ram >= 7.0
-				@multiplo += 7
-				@rank += 90 * @multiplo
-			elsif @ram >= 4.0
-				@multiplo += 4
-				@rank += 30 * @multiplo
-			end
+			@rank = 0
 			if @ram_free >= 80.0
-				@rank += 50 * @multiplo
+				@rank += 70 * @multiplo
 			elsif @ram_free >= 70.0
-				@rank += 40 * @multiplo
+				@rank += 60 * @multiplo
 			elsif @ram_free >= 60.0
+				@rank += 50 * @multiplo
+			elsif @ram_free >= 40.0
+				@rank += 40 * @multiplo
+			elsif @ram_free >= 30.0
 				@rank += 30 * @multiplo
-			elsif @ram_free >= 40
+			elsif @ram_free >= 20.0
 				@rank += 20 * @multiplo
+			elsif @ram_free >= 10.0
+				@rank += 10 * @multiplo
 			end
 			if @cpu_percent >= 80.0
-				@rank += 50 * @multiplo
+				@rank += 70 * @multiplo
 			elsif @cpu_percent >= 70.0
-				@rank += 40 * @multiplo
+				@rank += 60 * @multiplo
 			elsif @cpu_percent >= 60.0
+				@rank += 60 * @multiplo
+			elsif @cpu_percent >= 50.0
+				@rank += 50 * @multiplo
+			elsif @cpu_percent >= 40.0
+				@rank += 40 * @multiplo
+			elsif @cpu_percent >= 30.0
 				@rank += 30 * @multiplo
-			elsif @cpu_percent >= 40
+			elsif @cpu_percent >= 20.0
 				@rank += 20 * @multiplo
+			elsif @cpu_percent >= 20.0
+				@rank += 10 * @multiplo
 			end
 			information = Hash[name: @user,
 								ram_free: @ram_free,
@@ -77,41 +72,17 @@ class Nodo
 			loop do
 				if @cpu == 'intel i7'
 					@multiplo = 15
-					@rank = 100 * @multiplo
 				elsif @cpu == 'intel i5' || @cpu == 'AMD A9'
 					@multiplo = 10
-					@rank = 80 * @multiplo
 				elsif @cpu == 'intel i3' 
 					@multiplo = 8
-					@rank = 50 * @multiplo
 				end
 				if @ram >= 11.0
-					@multiplo += 10
-					@rank += 100 * @multiplo
+					@multiplo += 15
 				elsif @ram >= 7.0
-					@multiplo += 7
-					@rank += 90 * @multiplo
-				elsif @ram >= 4.0
-					@multiplo += 4
-					@rank += 30 * @multiplo
-				end
-				if @ram_free >= 80.0
-					@rank += 50 * @multiplo
-				elsif @ram_free >= 70.0
-					@rank += 40 * @multiplo
-				elsif @ram_free >= 60.0
-					@rank += 30 * @multiplo
-				elsif @ram_free >= 40
-					@rank += 20 * @multiplo
-				end
-				if @cpu_percent >= 80.0
-					@rank += 50 * @multiplo
-				elsif @cpu_percent >= 70.0
-					@rank += 40 * @multiplo
-				elsif @cpu_percent >= 60.0
-					@rank += 30 * @multiplo
-				elsif @cpu_percent >= 40
-					@rank += 20 * @multiplo
+					@multiplo += 10
+				elsif @ram >= 3.0
+					@multiplo += 8
 				end
 
 				information = Hash[name: @user,

@@ -2,6 +2,7 @@ require 'socket'
 require 'json'
 require 'tk'
 require 'posixpsutil'
+require_relative 'colorize'
 
 class Client
     def initialize host_name, port_host
@@ -13,7 +14,7 @@ class Client
 		@memory = (PosixPsutil::Disks.disk_usage("/").free / 1e+9).round 2
 		@user = "carlos"
 		@rank = 0
-        puts "Started node......."
+        puts "Started Client node".dark_cyan.bold
 		run_client
 	end
 	

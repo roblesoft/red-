@@ -2,6 +2,7 @@ require 'tk'
 require 'socket'
 require 'json'
 require_relative 'Cliet'
+require_relative 'colorize'
 
 class Nodo
     def initialize port_server
@@ -19,12 +20,20 @@ class Nodo
 		@cpus = []
 		@ranks = []
 		@index = 0
-        puts "Started node......."
+		@percent = 0
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
         run
     end
 
     def run_server
 		myself = @self
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
 		content = Tk::Tile::Frame.new(@root) { padding "3 3 12 12" }
 		@names = @connection_details.map {|item| item['name'] }
 		@ips = @connection_details.map {|item| item['ip'] }
@@ -45,6 +54,10 @@ class Nodo
 		$cpu_percent_variable = TkVariable.new @cpus_percent
 		$memory_free_variable = TkVariable.new @memory
 
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
 		names_list = TkListbox.new(content) do 
 			listvariable $names_list_variable 
 			width 10 
@@ -61,6 +74,10 @@ class Nodo
 			listvariable $cpus_list_variable
 			width 10 
 		end
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
 		rank_list = TkListbox.new(content)  do 
 			listvariable $ranks_list_variable 
 			width 10 
@@ -77,6 +94,10 @@ class Nodo
 			listvariable $memory_free_variable
 			width 10 
 		end
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
 
 		namelbl = Tk::Tile::Label.new(content) {text 'Nombre'}
 		iplbl = Tk::Tile::Label.new(content) {text 'Ip'}
@@ -102,6 +123,9 @@ class Nodo
 		ramfreelbl.grid column: 7, row: 1
 		ranklbl.grid column: 8, row: 1
 		close_conection.grid column: 8, row: 3, pady: 10
+		@percent += 1
+		sleep 0.5
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
 
 		names_list.grid column: 1, row: 2
 		ips_list.grid column: 2, row: 2
@@ -111,6 +135,11 @@ class Nodo
 		cpu_percent_list.grid column: 6, row: 2
 		ram_free_list.grid column: 7, row: 2
 		rank_list.grid column: 8, row: 2
+
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
 
 		def create_data name, ips, cpus, rams_free, ranks, rams, cpus_percent, memory
 			$names_list_variable.value = name
@@ -123,18 +152,32 @@ class Nodo
 			$memory_free_variable.value = memory
 		end
 
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.5
+		print  ("\e[K") # Delete current line
+
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.1
+		print  ("\e[K") # Delete current line
+
+		@percent += 1
+		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		sleep 0.1
+		print  ("\e[K") # Delete current line
+		
+		puts "Start server node".dark_purple.bold
 		
 		def update_data index, client, remote_id
 			loop do 
 				sleep 1
 				response = JSON.parse(client.gets)
 				unless response['n'].nil?
-					puts response['n']
 					Thread.start do
 						system("python3 ./PageRank/main.py")
 					end
 				else
-				puts response
 				response['ip'] = remote_id
 				@connection_details[index] = response
 
@@ -151,17 +194,20 @@ class Nodo
 				end
 			end
 		end
-		
+
         begin
 			loop do 
 				@client_connection = @server_socket.accept
 				Thread.start(@client_connection) do |client|
 					sock_domain, remote_port, remote_hostname, remote_id = client.peeraddr
-					puts "connect to #{remote_id}"
+					puts "connect to #{remote_id}".yellow.bold
+
+					#@root.wm_withdraw
+					#sleep 4 
+					#@root.wm_deiconify
 					@index += 1
 					client_number = @index
 					response = JSON.parse(client.gets)
-					puts response
 					response['ip'] = remote_id
 					@connection_details[@index] = response
 					update_data client_number, client, remote_id

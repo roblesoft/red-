@@ -1,6 +1,7 @@
 require 'tk'
 require 'socket'
 require 'json'
+require_relative 'Cliet'
 
 class Nodo
     def initialize port_server
@@ -112,7 +113,6 @@ class Nodo
 		rank_list.grid column: 8, row: 2
 
 		def create_data name, ips, cpus, rams_free, ranks, rams, cpus_percent, memory
-
 			$names_list_variable.value = name
 			$ips_list_variable.value = ips
 			$cpus_list_variable.value = cpus
@@ -196,4 +196,7 @@ class Nodo
     end
 end
 
+Thread.start  do
+	Client.new 'localhost', 5434
+end
 Nodo.new 5434

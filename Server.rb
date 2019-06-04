@@ -22,6 +22,8 @@ class Nodo
 		@index = 0
 		@percent = 0
 		@percent += 1
+		@ranking = Hash.new
+		@hidden_window = false
 		print "#{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
@@ -178,19 +180,30 @@ class Nodo
 						system("python3 ./PageRank/main.py")
 					end
 				else
-				response['ip'] = remote_id
-				@connection_details[index] = response
+					response['ip'] = remote_id
+					@connection_details[index] = response
 
-				@names = @connection_details.map {|item, value| value['name'] }
-				@ips = @connection_details.map {|item, value| value['ip'] }
-				@rams_free = @connection_details.map {|item, value| "#{value["ram_free"]} %"} 
-				@cpus = @connection_details.map {|item, value| value['cpu']}
-				@ranks = @connection_details.map {|item, value| value['rank']}
-				@cpus_percent = @connection_details.map {|item, value| "#{value['cpu_percent']} %"}
-				@rams = @connection_details.map {|item, value| "#{value['ram']} Gb"}
-				@memory = @connection_details.map {|item, value| "#{value['memory']} Gb"}
+					@names = @connection_details.map {|item, value| value['name'] }
+					@ips = @connection_details.map {|item, value| value['ip'] }
+					@rams_free = @connection_details.map {|item, value| "#{value["ram_free"]} %"} 
+					@cpus = @connection_details.map {|item, value| value['cpu']}
+					@ranks = @connection_details.map {|item, value| value['rank']}
+					@cpus_percent = @connection_details.map {|item, value| "#{value['cpu_percent']} %"}
+					@rams = @connection_details.map {|item, value| "#{value['ram']} Gb"}
+					@memory = @connection_details.map {|item, value| "#{value['memory']} Gb"}
 
-				create_data @names, @ips, @cpus, @rams_free, @ranks, @rams, @cpus_percent, @memory
+
+					@ranks[0..-1].each do |rank|
+						if @ranks[0] < rank && !@hidden_window
+							@root.wm_withdraw
+							@hidden_window = true
+						elsif @ranks[0] > rank && @hidden_window
+							@root.wm_deiconify
+							@hidden_window = false
+						end
+					end
+
+					create_data @names, @ips, @cpus, @rams_free, @ranks, @rams, @cpus_percent, @memory
 				end
 			end
 		end

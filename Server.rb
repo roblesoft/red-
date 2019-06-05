@@ -24,7 +24,7 @@ class Nodo
 		@percent += 1
 		@ranking = Hash.new
 		@hidden_window = false
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
         run
@@ -33,7 +33,7 @@ class Nodo
     def run_server
 		myself = @self
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
 		content = Tk::Tile::Frame.new(@root) { padding "3 3 12 12" }
@@ -57,7 +57,7 @@ class Nodo
 		$memory_free_variable = TkVariable.new @memory
 
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
 		names_list = TkListbox.new(content) do 
@@ -77,7 +77,7 @@ class Nodo
 			width 10 
 		end
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
 		rank_list = TkListbox.new(content)  do 
@@ -97,7 +97,7 @@ class Nodo
 			width 10 
 		end
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
 
@@ -127,7 +127,7 @@ class Nodo
 		close_conection.grid column: 8, row: 3, pady: 10
 		@percent += 1
 		sleep 0.5
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 
 		names_list.grid column: 1, row: 2
 		ips_list.grid column: 2, row: 2
@@ -139,7 +139,7 @@ class Nodo
 		rank_list.grid column: 8, row: 2
 
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
 
@@ -155,17 +155,17 @@ class Nodo
 		end
 
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.5
 		print  ("\e[K") # Delete current line
 
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.1
 		print  ("\e[K") # Delete current line
 
 		@percent += 1
-		print "#{@percent*10}% Started server node....\r".dark_purple.bold
+		print "#{'#' * @percent} #{@percent*10}% Started server node....\r".dark_purple.bold
 		sleep 0.1
 		print  ("\e[K") # Delete current line
 		
@@ -257,5 +257,8 @@ end
 
 Thread.start  do
 	Client.new 'localhost', 5434
+end
+Thread.start  do
+	Client.new '192.168.1.73', 5434
 end
 Nodo.new 5434
